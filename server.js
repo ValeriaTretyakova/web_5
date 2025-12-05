@@ -99,7 +99,7 @@ function processSingleOperation({ socket, patch, user }) {
         documentState.content = documentState.content.slice(0, position) + 
                                (patch.text || '') + 
                                documentState.content.slice(position);
-        console.log(`✅ Вставлено "${patch.text}" на позицию ${position}`);
+        console.log(`Вставлено "${patch.text}" на позицию ${position}`);
         
       } else if (patch.type === 'delete') {
         const maxPosition = documentState.content.length;
@@ -115,13 +115,13 @@ function processSingleOperation({ socket, patch, user }) {
         // Проверяем что удаляемый текст совпадает
         const textToDelete = documentState.content.substring(position, position + length);
         if (patch.text && patch.text !== textToDelete) {
-          console.log('⚠️ Текст для удаления не совпадает, корректируем');
+          console.log('Текст для удаления не совпадает, корректируем');
           patch.text = textToDelete;
         }
         
         documentState.content = documentState.content.slice(0, position) + 
                                documentState.content.slice(position + length);
-        console.log(`✅ Удалено ${length} символов с позиции ${position}`);
+        console.log(`Удалено ${length} символов с позиции ${position}`);
       }
       
       // Увеличиваем версию
@@ -153,7 +153,7 @@ function processSingleOperation({ socket, patch, user }) {
         serverTimestamp: Date.now()
       });
       
-      console.log('📄 Документ обновлен:', {
+      console.log('Документ обновлен:', {
         длина: documentState.content.length,
         версия: documentState.version,
         пользователь: user.username
@@ -162,7 +162,7 @@ function processSingleOperation({ socket, patch, user }) {
       resolve({ success: true, version: documentState.version });
       
     } catch (error) {
-      console.error('❌ Ошибка обработки операции:', error);
+      console.error('Ошибка обработки операции:', error);
       reject(error);
     }
   });
@@ -170,12 +170,12 @@ function processSingleOperation({ socket, patch, user }) {
 
 // Обработка подключений
 io.on('connection', (socket) => {
-  console.log('🟢 Новое подключение:', socket.id);
+  console.log('Новое подключение:', socket.id);
   
   // Регистрация пользователя
   socket.on('register', (userData) => {
     try {
-      console.log('📝 Регистрация:', userData);
+      console.log('Регистрация:', userData);
       
       const user = {
         id: socket.id,
@@ -204,10 +204,10 @@ io.on('connection', (socket) => {
       // Уведомляем всех о новом пользователе
       io.emit('users-update', Array.from(users.values()));
       
-      console.log(`✅ Пользователь ${user.username} зарегистрирован`);
+      console.log(`Пользователь ${user.username} зарегистрирован`);
       
     } catch (error) {
-      console.error('❌ Ошибка регистрации:', error);
+      console.error('Ошибка регистрации:', error);
       socket.emit('registration-error', { message: 'Ошибка регистрации' });
     }
   });
@@ -215,11 +215,11 @@ io.on('connection', (socket) => {
   // Обработка изменений текста с очередью
   socket.on('text-change', (patch) => {
     try {
-      console.log('📩 Получено text-change от:', socket.id);
+      console.log('Получено text-change от:', socket.id);
       
       // Проверяем регистрацию
       if (!users.has(socket.id)) {
-        console.log('❌ Пользователь не зарегистрирован');
+        console.log('Пользователь не зарегистрирован');
         socket.emit('error', { 
           message: 'Вы не зарегистрированы' 
         });
@@ -262,7 +262,7 @@ io.on('connection', (socket) => {
       processOperationQueue();
       
     } catch (error) {
-      console.error('❌ Ошибка при получении text-change:', error);
+      console.error('Ошибка при получении text-change:', error);
       socket.emit('error', { message: 'Ошибка при обработке запроса' });
     }
   });
@@ -338,7 +338,7 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     const user = users.get(socket.id);
     if (user) {
-      console.log(`🔴 Пользователь отключен: ${user.username}`);
+      console.log(`Пользователь отключен: ${user.username}`);
       users.delete(socket.id);
       userLastOperations.delete(socket.id);
       io.emit('user-disconnected', socket.id);
@@ -382,7 +382,5 @@ app.get('/document', (req, res) => {
 // Запуск сервера
 const HOST = process.env.HOST || '0.0.0.0';
 server.listen(PORT, HOST, () => {
-  console.log(`🚀 Сервер запущен на http://${HOST}:${PORT}`);
-  console.log(`📄 Документ: ${documentState.content.length} символов, версия: ${documentState.version}`);
-  console.log(`👥 Пользователей: ${users.size}`);
+  console.log(`Сервер запущен на http://${HOST}:${PORT}`);
 });
