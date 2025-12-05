@@ -39,7 +39,7 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
     console.log('TextEditor: Socket доступен, регистрация:', isRegistered);
 
     const handleApplyPatch = (patch) => {
-      console.log('🔵 Получено обновление от другого пользователя:', {
+      console.log('Получено обновление от другого пользователя:', {
         от: patch.username,
         тип: patch.type,
         позиция: patch.position,
@@ -47,7 +47,7 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
       });
       
       if (isProcessingRef.current) {
-        console.log('⏸️ Пропускаем патч - идет обработка');
+        console.log('Пропускаем патч - идет обработка');
         // Сохраняем патч для поздней обработки
         pendingPatchesRef.current.set(patch.id || Date.now(), patch);
         return;
@@ -55,7 +55,7 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
       
       // Игнорируем собственные патчи
       if (lastAppliedPatchRef.current?.id === patch.id) {
-        console.log('🔁 Игнорируем собственный патч');
+        console.log('Игнорируем собственный патч');
         return;
       }
       
@@ -66,19 +66,19 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
         
         if (patch.type === 'insert' && patch.text) {
           const pos = Math.min(patch.position || 0, newText.length);
-          console.log(`📝 Вставка "${patch.text}" на позицию ${pos}`);
+          console.log(`Вставка "${patch.text}" на позицию ${pos}`);
           newText = newText.slice(0, pos) + patch.text + newText.slice(pos);
         } else if (patch.type === 'delete' && patch.text) {
           const pos = Math.min(patch.position || 0, newText.length);
           const textToDelete = patch.text;
           const deleteLength = textToDelete.length;
           
-          console.log(`🗑️ Удаление "${textToDelete}" с позиции ${pos}, длина: ${deleteLength}`);
+          console.log(`Удаление "${textToDelete}" с позиции ${pos}, длина: ${deleteLength}`);
           
           if (newText.substring(pos, pos + deleteLength) === textToDelete) {
             newText = newText.slice(0, pos) + newText.slice(pos + deleteLength);
           } else {
-            console.warn('⚠️ Текст для удаления не совпадает, пытаемся найти совпадение');
+            console.warn('Текст для удаления не совпадает, пытаемся найти совпадение');
             // Пытаемся найти текст рядом
             const foundIndex = newText.indexOf(textToDelete, Math.max(0, pos - 10));
             if (foundIndex !== -1) {
@@ -103,13 +103,13 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
     };
 
     const handleOperationConfirmed = (confirmation) => {
-      console.log('✅ Операция подтверждена сервером:', confirmation);
+      console.log('Операция подтверждена сервером:', confirmation);
       setLocalVersion(confirmation.version);
       lastAppliedPatchRef.current = null;
     };
 
     const handleVersionMismatch = (data) => {
-      console.log('🔄 Несовпадение версий:', data);
+      console.log('Несовпадение версий:', data);
       setIsSyncing(true);
       
       // Синхронизируем с сервером
@@ -123,7 +123,7 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
     };
 
     const handleOperationError = (error) => {
-      console.error('❌ Ошибка операции:', error);
+      console.error('Ошибка операции:', error);
       // Можно показать уведомление пользователю
     };
 
@@ -304,5 +304,6 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
     </div>
   );
 };
+
 
 export default TextEditor;
