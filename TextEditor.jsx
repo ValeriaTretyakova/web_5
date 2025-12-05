@@ -23,7 +23,7 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
   // Синхронизация с внешним контентом
   useEffect(() => {
     if (content !== lastContentRef.current && !isProcessingRef.current) {
-      console.log('📥 Получен новый контент от сервера');
+      console.log('Получен новый контент от сервера');
       setText(content || '');
       lastContentRef.current = content || '';
     }
@@ -307,3 +307,4 @@ const TextEditor = ({ content, onPatch, onCursorMove, users, socket, isRegistere
 
 
 export default TextEditor;
+
